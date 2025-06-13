@@ -3,7 +3,7 @@ def extract_keypoints(llm, target_text, n_points=3):
     テキスト:
     {target_text}
     
-    このテキストを簡潔から重要なポイントを{n_points}個抽出してください。各ポイントは箇条書きで簡潔に記述してください。
+    このテキストを簡潔から重要なポイントを{n_points}個抽出してください。各ポイントは箇条書きかつ一文で簡潔に記述してください。
     ただし、以下のような形式で出力してください:
     - ポイント1
     - ポイント2
@@ -12,8 +12,8 @@ def extract_keypoints(llm, target_text, n_points=3):
     重要なポイント:
     """
     result = llm(template, max_tokens=1000, stop=["\n\n"])
-    
-    return result["choices"][0]["text"].strip()
+    keypoints = result["choices"][0]["text"].strip().split("\n")
+    return [point.strip() for point in keypoints if point.strip().startswith("-")]
 
 def extract_keywords(llm, target_text, n_keywords=5):
     template = f"""
@@ -26,6 +26,7 @@ def extract_keywords(llm, target_text, n_keywords=5):
     
     キーワード:
     """
-    result = llm(template, max_tokens=500, stop=["\n\n"])
-    
-    return result["choices"][0]["text"].strip()
+    result = llm(template, max_tokens=50*n_keywords, stop=["\n\n"])
+    keywords = result["choices"][0]["text"].strip().split(",")
+    return [keyword.strip() for keyword in keywords if keyword.strip() != ""]
+
