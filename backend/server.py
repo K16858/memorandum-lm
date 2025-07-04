@@ -30,3 +30,15 @@ class Session(BaseModel):
     chat_messages: List[Dict[str, str]]
     created_at: datetime
     tags: List[str]
+
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+
+class SummarizeRequest(BaseModel):
+    text: str
+    session_id: Optional[str] = None
+
+class KeypointsRequest(BaseModel):
+    text: str
+    session_id: Optional[str] = None
