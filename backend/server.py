@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
+
 
 app = FastAPI(title="MaidMemorandum API", version="1.0.0")
 
@@ -42,3 +43,7 @@ class SummarizeRequest(BaseModel):
 class KeypointsRequest(BaseModel):
     text: str
     session_id: Optional[str] = None
+
+# インメモリデータベース（DB化予定）
+sessions: Dict[str, Session] = {}
+active_connections: Dict[str, WebSocket] = {}
