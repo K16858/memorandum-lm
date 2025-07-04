@@ -22,3 +22,11 @@ class Message(BaseModel):
     type: str  # "user", "ai", "summary", "keypoints"
     timestamp: datetime
     session_id: str
+
+class Session(BaseModel):
+    id: str
+    title: str
+    messages: List[Message]
+    chat_messages: List[Dict[str, str]]
+    created_at: datetime
+    tags: List[str]
