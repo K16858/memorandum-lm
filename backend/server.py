@@ -17,6 +17,8 @@ sys_msg = """
 7. 要約や分析を求められたら丁寧に対応してください．
 """
 
+MAX_MESSAGE = 20  # メッセージ履歴の最大数
+
 app = FastAPI(title="MaidMemorandum API", version="1.0.0")
 
 # CORS設定
@@ -92,3 +94,14 @@ def add_message(session_id: str, content: str, message_type: str) -> Message:
     )
     session.messages.append(message)
     return message
+
+# チャットメッセージ管理
+def add_chat_message(session_id: str, role: str, content: str):
+    session = get_session(session_id)
+    session.chat_messages.append({"role": role, "content": content})
+    
+    # メッセージ履歴を制限（システムメッセージ + 最新n件）
+    max_messages = MAX_MESSAGE
+    if len(session.chat_messages) > max_messages:
+        # システムメッセージは保持し，古いメッセージを削除
+        session.chat_messages = [session.chat_messages[0]] + session.chat_messages[-(max_messages-1):]
