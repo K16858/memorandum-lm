@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
 import uuid
+from llm_loader import llm
+from tools.summarize import summarize_text
+from tools.extract_keypoints import extract_keypoints, extract_keywords
 
 # 仮システムプロンプト
 sys_msg = """
@@ -124,3 +127,18 @@ async def create_new_session(title: str = "New Session"):
 async def get_session_by_id(session_id: str):
     session = get_session(session_id)
     return {"session": session}
+
+@app.post("/summarize")
+async def summarize_endpoint(request: SummarizeRequest):
+    try:
+        # 要約を生成
+        summary = summarize_text(llm, request.text)
+        
+        # セッションが指定されている場合，メッセージを追加
+        if request.session_id:
+            add_message(request.session_id, f"要約対象テキスト:\n{request.text[:200]}...", "document")
+            add_message(request.session_id, summary, "summary")
+        
+        return {"summary": summary}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
