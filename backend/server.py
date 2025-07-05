@@ -110,3 +110,7 @@ def add_chat_message(session_id: str, role: str, content: str):
 @app.get("/")
 async def root():
     return {"message": "MaidMemorandum API is running!"}
+
+@app.get("/sessions")
+async def get_sessions():
+    return {"sessions": list(sessions.values())}
