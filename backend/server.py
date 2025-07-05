@@ -105,3 +105,8 @@ def add_chat_message(session_id: str, role: str, content: str):
     if len(session.chat_messages) > max_messages:
         # システムメッセージは保持し，古いメッセージを削除
         session.chat_messages = [session.chat_messages[0]] + session.chat_messages[-(max_messages-1):]
+
+# エンドポイント定義
+@app.get("/")
+async def root():
+    return {"message": "MaidMemorandum API is running!"}
