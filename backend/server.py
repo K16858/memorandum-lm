@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
+import uuid
 
 
 app = FastAPI(title="MaidMemorandum API", version="1.0.0")
@@ -47,3 +48,17 @@ class KeypointsRequest(BaseModel):
 # インメモリデータベース（DB化予定）
 sessions: Dict[str, Session] = {}
 active_connections: Dict[str, WebSocket] = {}
+
+# セッション作成
+def create_session(title: str = "New Session", system_prompt: str = sys_msg) -> Session:
+    session_id = str(uuid.uuid4())
+    session = Session(
+        id=session_id,
+        title=title,
+        messages=[],
+        chat_messages=[{"role": "system", "content": system_prompt}],  # システムメッセージで初期化
+        created_at=datetime.now(),
+        tags=[]
+    )
+    sessions[session_id] = session
+    return session
