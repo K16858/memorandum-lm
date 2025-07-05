@@ -119,3 +119,8 @@ async def get_sessions():
 async def create_new_session(title: str = "New Session"):
     session = create_session(title)
     return {"session": session}
+
+@app.get("/sessions/{session_id}")
+async def get_session_by_id(session_id: str):
+    session = get_session(session_id)
+    return {"session": session}
