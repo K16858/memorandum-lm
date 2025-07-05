@@ -79,3 +79,16 @@ def get_session(session_id: str) -> Session:
     if session_id not in sessions:
         raise HTTPException(status_code=404, detail="Session not found")
     return sessions[session_id]
+
+# メッセージ追加
+def add_message(session_id: str, content: str, message_type: str) -> Message:
+    session = get_session(session_id)
+    message = Message(
+        id=str(uuid.uuid4()),
+        content=content,
+        type=message_type,
+        timestamp=datetime.now(),
+        session_id=session_id
+    )
+    session.messages.append(message)
+    return message
