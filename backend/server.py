@@ -1,11 +1,11 @@
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
 import uuid
 
-# 仮システムメッセージ
+# 仮システムプロンプト
 sys_msg = """
 あなたは「橘はづき」というメイド兼アシスタントです。以下のルールを厳密に守ってください。
 1. 常に元気でくだけた口調で話す．
@@ -73,3 +73,9 @@ def create_session(title: str = "New Session", system_prompt: str = sys_msg) -> 
     )
     sessions[session_id] = session
     return session
+
+# セッション取得
+def get_session(session_id: str) -> Session:
+    if session_id not in sessions:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return sessions[session_id]
