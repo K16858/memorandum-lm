@@ -114,3 +114,8 @@ async def root():
 @app.get("/sessions")
 async def get_sessions():
     return {"sessions": list(sessions.values())}
+
+@app.post("/sessions")
+async def create_new_session(title: str = "New Session"):
+    session = create_session(title)
+    return {"session": session}
